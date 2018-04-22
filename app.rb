@@ -1,4 +1,6 @@
 require 'sinatra'
+require 'sinatra/activerecord'
+
 require 'em-http-request'
 require 'redis'
 require 'dotenv'
