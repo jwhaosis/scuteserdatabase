@@ -27,8 +27,7 @@ post '/' do
   puts "-------------------#{request.env['rack.input'].read}---------------------"
   puts "--------------------#{data.class}------------------"
   puts "--------------------#{data}----------------------"
-  puts "--------------------#{JSON.parse data}----------------------------------"
-  data
+  $redis.set("test", data)
 end
 
 post '/user/create' do
