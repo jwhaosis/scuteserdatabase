@@ -23,7 +23,8 @@ end
 post '/' do
   request.body.rewind
   data = request.body.read.to_s
-  data.class
+  puts request.media_type
+  data
 end
 
 post '/user/create' do
