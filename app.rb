@@ -23,7 +23,7 @@ end
 post '/' do
   request.body.rewind
   data = request.body.read.to_s
-  puts request.media_type
+  puts "-------------------#{request.media_type}---------------------------------"
   data
 end
 
