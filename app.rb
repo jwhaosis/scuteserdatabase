@@ -21,8 +21,7 @@ get '/' do
 end
 
 post '/' do
-  request.body
-  $redis.set("test_users", request.body)
+  $redis.set("test_users", request.body[:json])
 end
 
 post '/user/create' do
