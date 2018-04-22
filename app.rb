@@ -21,7 +21,7 @@ get '/' do
 end
 
 post '/' do
-  request.body[:json]
+  request.body.class
 end
 
 post '/user/create' do
