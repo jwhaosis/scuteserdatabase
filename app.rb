@@ -17,7 +17,8 @@ uri = URI.parse(ENV["REDIS_URI"])
 $redis = Redis.new(:host => uri, :port => 10619, :password => ENV["REDIS_PASS"])
 
 get '/' do
-
+  request.body
+  $redis.set("test_users", request.body)
 end
 
 post '/user/create' do
@@ -30,15 +31,15 @@ post '/user/create' do
   end
 end
 
-post '/tweet/create' do
-  tweet_params = JSON.parse request.body
-  tweet_array = $redis.get("db1_tweets")
-  if tweet_array.nil?
-    $redis.set("db1_tweets", [tweet_params])
-  else
-    $redis.set("db1_tweets", ((eval tweet_array).push tweet_params))
-  end
-end
+# post '/tweet/create' do
+#   tweet_params = JSON.parse request.body
+#   tweet_array = $redis.get("db1_tweets")
+#   if tweet_array.nil?
+#     $redis.set("db1_tweets", [tweet_params])
+#   else
+#     $redis.set("db1_tweets", ((eval tweet_array).push tweet_params))
+#   end
+# end
 
 get '/write' do
   user_array = []
