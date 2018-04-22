@@ -26,7 +26,8 @@ post '/' do
   puts "-------------------#{request.media_type}---------------------------------"
   puts "-------------------#{request.env['rack.input'].read}---------------------"
   puts "--------------------#{data.class}------------------"
-  JSON.parse data
+  puts "--------------------#{data}----------------------"
+  data
 end
 
 post '/user/create' do
