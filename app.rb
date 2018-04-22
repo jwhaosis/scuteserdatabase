@@ -21,7 +21,8 @@ get '/' do
 end
 
 post '/' do
-  request.body.read
+  data = JSON.parse request.body.read
+  data.class
 end
 
 post '/user/create' do
