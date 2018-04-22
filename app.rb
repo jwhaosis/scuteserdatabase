@@ -20,6 +20,10 @@ get '/' do
 
 end
 
+post '/async' do
+  sleep(10)
+end
+
 post '/' do
   request.body.rewind
   data = request.body.read.to_s
