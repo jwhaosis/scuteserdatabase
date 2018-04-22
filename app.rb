@@ -25,6 +25,7 @@ post '/' do
   data = request.body.read.to_s
   puts "-------------------#{request.media_type}---------------------------------"
   puts "-------------------#{request.env['rack.input'].read}---------------------"
+  puts "--------------------#{data.class}------------------"
   data
 end
 
