@@ -22,7 +22,7 @@ end
 
 post '/' do
   request.body.rewind
-  data = JSON.parse request.body.read
+  data = request.body.read
   data.class
 end
 
