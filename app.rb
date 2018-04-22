@@ -23,10 +23,10 @@ end
 post '/' do
   request.body.rewind
   data = request.body.read.to_s
-  puts "-------------------#{request.media_type}---------------------------------"
-  puts "-------------------#{request.env['rack.input'].read}---------------------"
-  puts "--------------------#{data.class}------------------"
-  puts "--------------------#{data}----------------------"
+  # puts "-------------------#{request.media_type}---------------------------------"
+  # puts "-------------------#{request.env['rack.input'].read}---------------------"
+  # puts "--------------------#{data.class}------------------"
+  # puts "--------------------#{data}----------------------"
   $redis.set("test", data)
 end
 
