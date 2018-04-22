@@ -24,6 +24,7 @@ post '/' do
   request.body.rewind
   data = request.body.read.to_s
   puts "-------------------#{request.media_type}---------------------------------"
+  puts "-------------------#{request.env['rack.input'].read}---------------------"
   data
 end
 
