@@ -18,6 +18,11 @@ get '/' do
   "Welcome to the Scuteser database backend, why are you here?"
 end
 
+get '/create/tweet' do
+  tweet = Tweet.create(user_id: 1001, tweet: Faker::Hacker.say_something_smart, created_at: Faker::Date.backward(14))
+  tweet.to_json
+end
+
 post '/create/tweet' do
   Tweet.new(user_id: 1001, tweet: Faker::Hacker.say_something_smart, created_at: Faker::Date.backward(14))
 end
