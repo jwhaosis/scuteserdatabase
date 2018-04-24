@@ -27,8 +27,9 @@ post '/create/tweet/:id' do
     body = Faker::Hacker.say_something_smart
   end
   id = $redis.get("tweet_inc")
+  $redis.setnx "tweet_inc", Tweet.count
   $redis.incr "tweet_inc"
-  Tweet.new(id: id, user_id: params[:id], tweet: body, created_at: Faker::Date.backward(14))
+  Tweet.create(id: id, user_id: params[:id], tweet: body, created_at: Faker::Date.backward(14))
 end
 
 post '/create/:model' do
