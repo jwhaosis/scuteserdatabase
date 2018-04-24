@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'dotenv'
 gem 'em-http-request'
+gem 'faker'
 gem 'rake'
 gem 'redis'
 gem 'sinatra'

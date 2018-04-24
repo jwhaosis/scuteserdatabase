@@ -3,6 +3,8 @@ require 'sinatra/activerecord'
 require 'em-http-request'
 require 'redis'
 require 'dotenv'
+require 'faker'
+
 require './models/follower'
 require './models/hashtag'
 require './models/like'
