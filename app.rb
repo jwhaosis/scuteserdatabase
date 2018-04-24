@@ -20,13 +20,15 @@ get '/' do
   "Welcome to the Scuteser database backend, why are you here?"
 end
 
-get '/create/tweet' do
-  tweet = Tweet.create(user_id: 1001, tweet: Faker::Hacker.say_something_smart, created_at: Faker::Date.backward(14))
-  tweet.to_json
-end
-
-post '/create/tweet' do
-  Tweet.new(user_id: 1001, tweet: Faker::Hacker.say_something_smart, created_at: Faker::Date.backward(14))
+post '/create/tweet/:id' do
+  request.body.rewind
+  body = request.body.read.to_s
+  if body.nil?
+    body = Faker::Hacker.say_something_smart
+  end
+  id = $redis.get("tweet_inc")
+  $redis.incr "tweet_inc"
+  Tweet.new(id: id, user_id: params[:id], tweet: body, created_at: Faker::Date.backward(14))
 end
 
 post '/create/:model' do
