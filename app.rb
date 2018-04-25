@@ -31,13 +31,14 @@ get '/create/tweet/:id' do
   id = $redis.get("tweet_inc")
   $redis.incr "tweet_inc"
   new_tweet = Tweet.create(id: id, user_id: params[:id], tweet: body, created_at: Time.now)
+  new_tweet = (JSON.parse new_tweet.to_json)["name"] = User.where(id: id).first.name
   key = "user#{id}_tweets"
   user_tweets = $redis.get(key)
   if user_tweets.nil?
     user_tweets = Tweet.joins(:user).where(user_id: id).select("tweets.*, users.name").order(:created_at).last(50).reverse.to_json
   else
     user_tweets = JSON.parse user_tweets
-    user_tweets.pop
+    user_tweets.pop if(user_tweets.size > 49)
     user_tweets.unshift new_tweet
   end
   $redis.set(key, user_tweets.to_json)
