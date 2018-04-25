@@ -29,7 +29,17 @@ post '/create/tweet/:id' do
   id = $redis.get("tweet_inc")
   $redis.setnx "tweet_inc", Tweet.count
   $redis.incr "tweet_inc"
-  Tweet.create(id: id, user_id: params[:id], tweet: body, created_at: Faker::Date.backward(14))
+  key = "user#{id}_tweets"
+  user_tweets = $redis.get(key)
+  new_tweet = Tweet.create(id: id, user_id: params[:id], tweet: body, created_at: Time.now)
+  if user_tweets.nil?
+    user_tweets = Tweet.joins(:user).where(user_id: id).select("tweets.*, users.name").order(:created_at).last(50).reverse.to_json
+  else
+    user_tweets = JSON.parse user_tweets
+    user_tweets.pop
+    user_tweets.unshift new_tweet
+  end
+  $redis.set(key, user_tweets.to_json)
 end
 
 post '/create/:model' do
