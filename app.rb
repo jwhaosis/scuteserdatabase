@@ -27,7 +27,7 @@ get '/create/tweet/:id' do
   if body == ""
     body = Faker::Hacker.say_something_smart
   end
-  $redis.setnx "tweet_inc", Tweet.count
+  $redis.setnx "tweet_inc", Tweet.count+1
   id = $redis.get("tweet_inc")
   user_id = params[:id]
   $redis.incr "tweet_inc"
