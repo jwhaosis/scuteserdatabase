@@ -37,7 +37,7 @@ get '/create/tweet/:id' do
   key = "user#{user_id}_tweets"
   user_tweets = $redis.get(key)
   if user_tweets.nil?
-    user_tweets = Tweet.joins(:user).where(user_id: id).select("tweets.*, users.name").order(:created_at).last(50).reverse.to_json
+    user_tweets = Tweet.joins(:user).where(user_id: user_id).select("tweets.*, users.name").order(:created_at).last(50).reverse.to_json
   else
     user_tweets = JSON.parse user_tweets
     user_tweets.pop if(user_tweets.size > 49)
