@@ -21,7 +21,7 @@ get '/' do
   "Welcome to the Scuteser database backend, why are you here?"
 end
 
-get '/create/tweet/:id' do
+post '/create/tweet/:id' do
   request.body.rewind
   body = request.body.read.to_s
   if body == ""
@@ -35,6 +35,7 @@ get '/create/tweet/:id' do
   new_tweet = (JSON.parse new_tweet.to_json)
   new_tweet["name"] = User.where(id: user_id).first&.name
   key = "user#{user_id}_tweets"
+  info_key = "user#{user_id}_infos"
   user_tweets = $redis.get(key)
   if user_tweets.nil?
     user_tweets = Tweet.joins(:user).where(user_id: user_id).select("tweets.*, users.name").order(:created_at).last(50).reverse
@@ -44,6 +45,10 @@ get '/create/tweet/:id' do
     user_tweets.unshift new_tweet
   end
   $redis.set(key, user_tweets.to_json)
+  info = JSON.parse $redis.get info_key
+  info["tweet_count"] += 1
+  $redis.set(info_key, info)
+
   global_tweets = $redis.get("global_tweet_record")
   if global_tweets.nil?
     $redis.set("global_tweet_record", [new_tweet].to_json)
