@@ -24,7 +24,7 @@ end
 get '/create/tweet/:id' do
   request.body.rewind
   body = request.body.read.to_s
-  if body.nil?
+  if body == ""
     body = Faker::Hacker.say_something_smart
   end
   $redis.setnx "tweet_inc", Tweet.count
