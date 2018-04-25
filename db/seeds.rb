@@ -1,12 +1,12 @@
 require 'csv'
 require 'activerecord-import'
-require_relative '../app/models/user'
-require_relative '../app/models/follower'
-require_relative '../app/models/tweet'
-require_relative '../app/models/hashtag'
-require_relative '../app/models/like'
-require_relative '../app/models/tweettag'
-require_relative '../app/models/mention'
+require_relative '../models/user'
+require_relative '../models/follower'
+require_relative '../models/tweet'
+require_relative '../models/hashtag'
+require_relative '../models/like'
+require_relative '../models/tweettag'
+require_relative '../models/mention'
 
 #reset db
 User.delete_all
@@ -49,15 +49,15 @@ end
 #load tweets
 CSV.foreach('./db/seeds/tweets.csv') do |tweets_row|
   if (tweet_count < 2500)
-  user_id = tweets_row[0]
-  tweet = tweets_row[1]
-  created_at = tweets_row[2]
-  tweets << Tweet.new(
-      id: tweet_count+=1,
-      user_id: user_id.to_i,
-      tweet: tweet,
-      created_at: Date.parse(created_at)
-  )
+    user_id = tweets_row[0]
+    tweet = tweets_row[1]
+    created_at = tweets_row[2]
+    tweets << Tweet.new(
+        id: tweet_count+=1,
+        user_id: user_id.to_i,
+        tweet: tweet,
+        created_at: Date.parse(created_at)
+    )
   end
 end
 
