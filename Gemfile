@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'activerecord-import'
 gem 'dotenv'
 gem 'em-http-request'
 gem 'faker'

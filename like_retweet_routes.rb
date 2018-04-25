@@ -9,12 +9,13 @@ post '/create/like' do
     tweet_info[tweet_id][0] += 1
   end
   $redis.set("tweet_info", tweet_info)
-  redis_key = "cache_like"
+
+  redis_key = "global_like_record"
   model_array = $redis.get(redis_key)
   if model_array.nil?
-    $redis.set(redis_key, [model_params])
+    $redis.set(redis_key, [model_params].to_json)
   else
-    $redis.set(redis_key, ((eval model_array).push model_params))
+    $redis.set(redis_key, ((JSON.parse model_array).delete model_params).to_json)
   end
 end
 
@@ -29,10 +30,11 @@ post '/delete/like' do
     tweet_info[tweet_id][0] -= 1
   end
   $redis.set("tweet_info", tweet_info)
-  redis_key = "cache_like"
+
+  redis_key = "global_like_record"
   model_array = $redis.get(redis_key)
   if !model_array.nil?
-    $redis.set(redis_key, ((eval model_array).delete model_params))
+    $redis.set(redis_key, ((JSON.parse model_array).delete model_params).to_json)
   end
 end
 
@@ -47,11 +49,12 @@ post '/create/retweet' do
     tweet_info[tweet_id][1] += 1
   end
   $redis.set("tweet_info", tweet_info)
-  redis_key = "cache_retweet"
+
+  redis_key = "global_tweet_record"
   model_array = $redis.get(redis_key)
   if model_array.nil?
-    $redis.set(redis_key, [model_params])
+    $redis.set(redis_key, [model_params].to_json)
   else
-    $redis.set(redis_key, ((eval model_array).push model_params))
+    $redis.set(redis_key, ((JSON.parse model_array).push model_params).to_json)
   end
 end

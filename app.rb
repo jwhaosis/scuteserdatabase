@@ -4,7 +4,7 @@ require 'em-http-request'
 require 'redis'
 require 'dotenv'
 require 'faker'
-
+require 'activerecord-import'
 require './models/follower'
 require './models/hashtag'
 require './models/like'
@@ -40,10 +40,16 @@ post '/create/tweet/:id' do
     user_tweets.unshift new_tweet
   end
   $redis.set(key, user_tweets.to_json)
+  global_tweets = JSON.parse $redis.get("global_tweet_record")
+  if global_tweets.nil?
+    $redis.set("global_tweet_record", [new_tweet].to_json)
+  else
+    $redis.set("global_tweet_record", (global_tweets.push new_tweet).to_json)
+  end
 end
 
 post '/create/:model' do
-  redis_key = "#{ENV['DB_NUM']}_#{params[:model]}"
+  redis_key = "global_#{params[:model]}_record"
   request.body.rewind
   model_params = JSON.parse request.body.read.to_s
   model_array = $redis.get(redis_key)
@@ -54,13 +60,33 @@ post '/create/:model' do
   end
 end
 
-get '/write' do
-  user_array = []
-  (eval ($redis.get "db1_users")).each do |user_params|
-    user_array.push User.new(JSON.parse user_params)
+get '/sync' do
+  unsynced_users = JSON.parse $redis.get "global_user_record"
+  unsynced_tweets = JSON.parse $redis.get "global_tweet_record"
+  unsynced_likes = JSON.parse $redis.get "global_like_record"
+  unsynced_follows = JSON.parse $redis.get "global_follower_record"
+
+  users = []
+  unsynced_users.each do |user_params|
+    users << User.new(user_params)
   end
-  user_array.each do |user|
-    puts user.name
+  User.import users
+
+  tweets = []
+  unsynced_tweets.each do |tweets_params|
+    tweets << Tweet.new(tweets_params)
   end
-  "placeholder"
+  Tweet.import tweets
+
+  likes = []
+  unsynced_likes.each do |like_params|
+    likes << Like.new(like_params)
+  end
+  Like.import likes
+
+  follows = []
+  unsynced_follows.each do |follow_params|
+    follows << Follower.new(follow_params)
+  end
+  Follower.import follows
 end
