@@ -45,10 +45,12 @@ post '/create/tweet/:id' do
     user_tweets.unshift new_tweet
   end
   $redis.set(key, user_tweets.to_json)
-  info = JSON.parse $redis.get info_key
-  info["tweet_count"] += 1
-  $redis.set(info_key, info)
-
+  info = $redis.get info_key
+  if !info.nil?
+    info = JSON.parse info
+    info["tweet_count"] += 1
+    $redis.set(info_key, info.to_json)
+  end
   global_tweets = $redis.get("global_tweet_record")
   if global_tweets.nil?
     $redis.set("global_tweet_record", [new_tweet].to_json)
