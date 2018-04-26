@@ -32,31 +32,31 @@ post '/create/tweet/:id' do
   user_id = params[:id]
   $redis.incr "tweet_inc"
   new_tweet = Tweet.create(id: id, user_id: user_id, tweet: body, created_at: Time.now)
-  # new_tweet = (JSON.parse new_tweet.to_json)
-  # new_tweet["name"] = User.where(id: user_id).first&.name
-  # key = "user#{user_id}_tweets"
-  # info_key = "user#{user_id}_infos"
-  # user_tweets = $redis.get(key)
-  # if user_tweets.nil?
-  #   user_tweets = Tweet.joins(:user).where(user_id: user_id).select("tweets.*, users.name").order(:created_at).last(50).reverse
-  # else
-  #   user_tweets = JSON.parse user_tweets
-  #   user_tweets.pop if(user_tweets.size > 49)
-  #   user_tweets.unshift new_tweet
-  # end
-  # $redis.set(key, user_tweets.to_json)
-  # info = $redis.get info_key
-  # if !info.nil?
-  #   info = JSON.parse info
-  #   info["tweet_count"] += 1
-  #   $redis.set(info_key, info.to_json)
-  # end
-  # global_tweets = $redis.get("global_tweet_record")
-  # if global_tweets.nil?
-  #   $redis.set("global_tweet_record", [new_tweet].to_json)
-  # else
-  #   $redis.set("global_tweet_record", ((JSON.parse global_tweets).push new_tweet).to_json)
-  # end
+  new_tweet = (JSON.parse new_tweet.to_json)
+  new_tweet["name"] = User.where(id: user_id).first&.name
+  key = "user#{user_id}_tweets"
+  info_key = "user#{user_id}_infos"
+  user_tweets = $redis.get(key)
+  if user_tweets.nil?
+    user_tweets = Tweet.joins(:user).where(user_id: user_id).select("tweets.*, users.name").order(:created_at).last(50).reverse
+  else
+    user_tweets = JSON.parse user_tweets
+    user_tweets.pop if(user_tweets.size > 49)
+    user_tweets.unshift new_tweet
+  end
+  $redis.set(key, user_tweets.to_json)
+  info = $redis.get info_key
+  if !info.nil?
+    info = JSON.parse info
+    info["tweet_count"] += 1
+    $redis.set(info_key, info.to_json)
+  end
+  global_tweets = $redis.get("global_tweet_record")
+  if global_tweets.nil?
+    $redis.set("global_tweet_record", [new_tweet].to_json)
+  else
+    $redis.set("global_tweet_record", ((JSON.parse global_tweets).push new_tweet).to_json)
+  end
 end
 
 post '/create/:model' do
