@@ -15,7 +15,7 @@ require './app/models/tweettag'
 require './app/models/user'
 require './like_retweet_routes'
 Dotenv.load
-$redis = Redis.new(:host => ENV["REDIS_URI"], :port => 10619, :password => ENV["REDIS_PASS"])
+$redis = Redis.new(:host => ENV["REDIS_URI"], :port => 17627, :password => ENV["REDIS_PASS"])
 
 get '/' do
   "Welcome to the Scuteser database backend, why are you here?"
